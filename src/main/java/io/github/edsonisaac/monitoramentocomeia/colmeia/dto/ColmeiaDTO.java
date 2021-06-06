@@ -3,7 +3,7 @@ package io.github.edsonisaac.monitoramentocomeia.colmeia.dto;
 import io.github.edsonisaac.monitoramentocomeia.colmeia.model.Colmeia;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class ColmeiaDTO {
     private Long id;
     private String codigo;
-    private LocalDate dataCadastro;
+    private String dataCadastro;
     private Set<MedicaoDTO> medicoes;
 
     public static ColmeiaDTO toDTO (Colmeia colmeia) {
@@ -22,7 +22,7 @@ public class ColmeiaDTO {
         return new ColmeiaDTO(
             colmeia.getId(),
             colmeia.getCodigo(),
-            colmeia.getDataCadastro(),
+            colmeia.getDataCadastro().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
             colmeia.getMedicoes().stream().map(x -> MedicaoDTO.toDTO(x)).collect(Collectors.toSet())
         );
     }

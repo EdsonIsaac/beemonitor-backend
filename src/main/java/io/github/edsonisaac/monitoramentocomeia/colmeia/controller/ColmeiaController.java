@@ -45,9 +45,26 @@ public class ColmeiaController {
         );
     }
 
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ColmeiaDTO save (@RequestBody Colmeia colmeia) {
+        return ColmeiaDTO.toDTO(facade.colmeiaSave(colmeia));
+    }
+
+    @PutMapping(value = "/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ColmeiaDTO update (@PathVariable Long id, @RequestBody Colmeia colmeiaUpdated) {
+
+        Colmeia colmeia = facade.colmeiaFindById(id);
+        colmeia.setCodigo(colmeiaUpdated.getCodigo());
+        facade.colmeiaUpdate(colmeia);
+
+        return ColmeiaDTO.toDTO(colmeia);
+    }
+
     @GetMapping(value = "/update")
     @ResponseStatus(HttpStatus.OK)
-    public ColmeiaDTO update (@RequestParam String codigo, @RequestParam Double temperatura, @RequestParam Double umidade, @RequestParam Double peso) {
+    public void update (@RequestParam String codigo, @RequestParam Double temperatura, @RequestParam Double umidade, @RequestParam Double peso) {
 
         Colmeia colmeia = facade.colmeiaFindByCodigo(codigo);
         Medicao medicao = new Medicao();
@@ -57,12 +74,12 @@ public class ColmeiaController {
         medicao.setPeso(peso);
         colmeia.getMedicoes().add(medicao);
 
-        return ColmeiaDTO.toDTO(facade.colmeiaUpdate(colmeia));
+        facade.colmeiaUpdate(colmeia);
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ColmeiaDTO save (@RequestBody Colmeia colmeia) {
-        return ColmeiaDTO.toDTO(facade.colmeiaSave(colmeia));
+    @DeleteMapping(value = "/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void delete (@PathVariable Long id) {
+        facade.colmeiaDelete(facade.colmeiaFindById(id));
     }
 }

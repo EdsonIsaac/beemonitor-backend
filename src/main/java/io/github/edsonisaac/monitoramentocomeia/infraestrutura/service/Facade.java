@@ -23,16 +23,20 @@ public class Facade {
 
     /************************************************** COLMEIA **************************************************/
 
-    public Colmeia colmeiaFindById (Long id) {
-        return colmeiaService.findById(id);
+    public List<Colmeia> colmeiaFindAll() {
+        return colmeiaService.findAll();
     }
 
     public Colmeia colmeiaFindByCodigo (String codigo) {
         return colmeiaService.findByCodigo(codigo);
     }
 
-    public List<Colmeia> colmeiaFindAll() {
-        return colmeiaService.findAll();
+    public Colmeia colmeiaFindById (Long id) {
+        return colmeiaService.findById(id);
+    }
+
+    public void colmeiaDelete(Colmeia colmeia) {
+        colmeiaService.delete(colmeia);
     }
 
     public Colmeia colmeiaSave (Colmeia colmeia) {

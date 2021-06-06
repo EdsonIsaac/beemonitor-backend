@@ -1,6 +1,7 @@
 package io.github.edsonisaac.monitoramentocomeia.infraestrutura.controller;
 
 import io.github.edsonisaac.monitoramentocomeia.infraestrutura.exception.ObjectNotFoundException;
+import io.github.edsonisaac.monitoramentocomeia.infraestrutura.exception.OperationFailedException;
 import io.github.edsonisaac.monitoramentocomeia.infraestrutura.exception.StandardError;
 import io.github.edsonisaac.monitoramentocomeia.infraestrutura.exception.ValidationException;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,13 @@ public class ControllerAdvice {
 
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity validationException(ValidationException ex, HttpServletRequest request) {
+
+        StandardError error = new StandardError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(), "Bad Request", ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(OperationFailedException.class)
+    public ResponseEntity operationFailedException(OperationFailedException ex, HttpServletRequest request) {
 
         StandardError error = new StandardError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(), "Bad Request", ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);

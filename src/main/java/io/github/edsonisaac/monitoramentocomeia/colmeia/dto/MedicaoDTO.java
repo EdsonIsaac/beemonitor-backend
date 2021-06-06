@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,7 +18,7 @@ public class MedicaoDTO {
     private Double temperatura;
     private Double umidade;
     private Double peso;
-    private LocalDateTime dataHoraCadastro;
+    private String dataHoraCadastro;
 
     public static MedicaoDTO toDTO (Medicao medicao) {
 
@@ -26,7 +27,7 @@ public class MedicaoDTO {
             medicao.getTemperatura(),
             medicao.getUmidade(),
             medicao.getPeso(),
-            medicao.getDataHoraCadastro()
+            medicao.getDataHoraCadastro().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
         );
     }
 }
