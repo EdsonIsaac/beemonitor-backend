@@ -1,9 +1,6 @@
 package io.github.edsonisaac.monitoramentocomeia.infraestrutura.controller;
 
-import io.github.edsonisaac.monitoramentocomeia.infraestrutura.exception.ObjectNotFoundException;
-import io.github.edsonisaac.monitoramentocomeia.infraestrutura.exception.OperationFailedException;
-import io.github.edsonisaac.monitoramentocomeia.infraestrutura.exception.StandardError;
-import io.github.edsonisaac.monitoramentocomeia.infraestrutura.exception.ValidationException;
+import io.github.edsonisaac.monitoramentocomeia.infraestrutura.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -32,5 +29,12 @@ public class ControllerAdvice {
 
         StandardError error = new StandardError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(), "Bad Request", ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(UnauthorizedAcessException.class)
+    public ResponseEntity unauthorizedAcessException(UnauthorizedAcessException ex, HttpServletRequest request) {
+
+        StandardError error = new StandardError(System.currentTimeMillis(), HttpStatus.UNAUTHORIZED.value(), "Unauthorized", ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 }

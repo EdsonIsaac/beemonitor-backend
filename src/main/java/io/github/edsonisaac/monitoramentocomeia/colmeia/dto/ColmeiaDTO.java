@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 public class ColmeiaDTO {
     private Long id;
     private String codigo;
+    private String telefone;
     private String dataCadastro;
     private Set<MedicaoDTO> medicoes;
 
@@ -22,6 +23,7 @@ public class ColmeiaDTO {
         return new ColmeiaDTO(
             colmeia.getId(),
             colmeia.getCodigo(),
+            colmeia.getTelefone(),
             colmeia.getDataCadastro().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
             colmeia.getMedicoes().stream().map(x -> MedicaoDTO.toDTO(x)).collect(Collectors.toSet())
         );

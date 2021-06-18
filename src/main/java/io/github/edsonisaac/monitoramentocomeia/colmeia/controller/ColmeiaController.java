@@ -3,6 +3,7 @@ package io.github.edsonisaac.monitoramentocomeia.colmeia.controller;
 import io.github.edsonisaac.monitoramentocomeia.colmeia.dto.ColmeiaDTO;
 import io.github.edsonisaac.monitoramentocomeia.colmeia.model.Colmeia;
 import io.github.edsonisaac.monitoramentocomeia.colmeia.model.Medicao;
+import io.github.edsonisaac.monitoramentocomeia.infraestrutura.exception.UnauthorizedAcessException;
 import io.github.edsonisaac.monitoramentocomeia.infraestrutura.service.Facade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -57,6 +58,7 @@ public class ColmeiaController {
 
         Colmeia colmeia = facade.colmeiaFindById(id);
         colmeia.setCodigo(colmeiaUpdated.getCodigo());
+        colmeia.setTelefone(colmeiaUpdated.getTelefone());
         facade.colmeiaUpdate(colmeia);
 
         return ColmeiaDTO.toDTO(colmeia);
@@ -64,17 +66,22 @@ public class ColmeiaController {
 
     @GetMapping(value = "/update")
     @ResponseStatus(HttpStatus.OK)
-    public void update (@RequestParam String codigo, @RequestParam Double temperatura, @RequestParam Double umidade, @RequestParam Double peso) {
+    public void update (@RequestParam String codigo, @RequestParam Double temperatura, @RequestParam Double umidade, @RequestParam Double peso, @RequestParam String telefone) {
 
         Colmeia colmeia = facade.colmeiaFindByCodigo(codigo);
-        Medicao medicao = new Medicao();
 
-        medicao.setTemperatura(temperatura);
-        medicao.setUmidade(umidade);
-        medicao.setPeso(peso);
-        colmeia.getMedicoes().add(medicao);
+        if (colmeia.getTelefone().equals(telefone)) {
+            Medicao medicao = new Medicao();
 
-        facade.colmeiaUpdate(colmeia);
+            medicao.setTemperatura(temperatura);
+            medicao.setUmidade(umidade);
+            medicao.setPeso(peso);
+            colmeia.getMedicoes().add(medicao);
+
+            facade.colmeiaUpdate(colmeia);
+        } else {
+            throw new UnauthorizedAcessException("Acesso negado!");
+        }
     }
 
     @DeleteMapping(value = "/{id}")
