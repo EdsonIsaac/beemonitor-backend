@@ -10,23 +10,23 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
-public class ArduinoApplication implements CommandLineRunner {
+public class MonitoramentoColmeiaApplication implements CommandLineRunner {
 
 	private final Facade facade;
 	private final BCryptPasswordEncoder encoder;
 
 	@Autowired
-	public ArduinoApplication(Facade facade, BCryptPasswordEncoder encoder) {
+	public MonitoramentoColmeiaApplication(Facade facade, BCryptPasswordEncoder encoder) {
 		this.facade = facade;
 		this.encoder = encoder;
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(ArduinoApplication.class, args);
+		SpringApplication.run(MonitoramentoColmeiaApplication.class, args);
 	}
 
 	@Override
-	public void run(String... args) throws Exception {
+	public void run(String... args) {
 		checkDefaultUser();
 	}
 
