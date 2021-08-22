@@ -33,11 +33,7 @@ public class MonitoramentoColmeiaApplication implements CommandLineRunner {
 	private void checkDefaultUser () {
 
 		try {
-			Usuario usuario = facade.usuarioFindByUsuario("cooperativa");
-
-			if (!encoder.matches("Rf0c4a>E", usuario.getSenha())) {
-				saveDefaultUser(usuario);
-			}
+			saveDefaultUser(facade.usuarioFindByUsuario("cooperativa"));
 		} catch (ObjectNotFoundException ex) {
 			saveDefaultUser(new Usuario());
 		}
