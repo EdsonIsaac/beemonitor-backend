@@ -70,7 +70,7 @@ public class ColmeiaController {
 
         Colmeia colmeia = facade.colmeiaFindByCodigo(codigo);
 
-        if (colmeia.getTelefone().equals(telefone)) {
+        //if (colmeia.getTelefone().equals(telefone)) {
             Medicao medicao = new Medicao();
 
             medicao.setTemperatura(temperatura);
@@ -79,9 +79,9 @@ public class ColmeiaController {
             colmeia.getMedicoes().add(medicao);
 
             facade.colmeiaUpdate(colmeia);
-        } else {
+        /*} else {
             throw new UnauthorizedAcessException("Acesso negado!");
-        }
+        }*/
     }
 
     @DeleteMapping(value = "/{id}")
