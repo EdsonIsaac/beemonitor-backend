@@ -3,7 +3,6 @@ package io.github.edsonisaac.monitoramentocomeia.colmeia.controller;
 import io.github.edsonisaac.monitoramentocomeia.colmeia.dto.ColmeiaDTO;
 import io.github.edsonisaac.monitoramentocomeia.colmeia.model.Colmeia;
 import io.github.edsonisaac.monitoramentocomeia.colmeia.model.Medicao;
-import io.github.edsonisaac.monitoramentocomeia.infraestrutura.exception.UnauthorizedAcessException;
 import io.github.edsonisaac.monitoramentocomeia.infraestrutura.service.Facade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping(value = "/colmeias")
@@ -25,7 +25,22 @@ public class ColmeiaController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ColmeiaDTO> findAll () {
+    public List<ColmeiaDTO> findAll (@RequestParam(required = false) boolean oneMedicao) {
+
+        if (oneMedicao) {
+            return facade.colmeiaFindAll()
+                .stream()
+                .map(colmeia -> {
+
+                    if (colmeia.getMedicoes().size() > 0) {
+                        colmeia.setMedicoes(Stream.of(colmeia.getMedicoes().stream().sorted((a, b) -> a.getDataHoraCadastro().compareTo(b.getDataHoraCadastro()) * -1).findFirst().orElse(null)).collect(Collectors.toSet()));
+                    }
+
+                    return ColmeiaDTO.toDTO(colmeia);
+                }).collect(Collectors.toList())
+            ;
+        }
+
         return facade.colmeiaFindAll().stream().map(x -> ColmeiaDTO.toDTO(x)).collect(Collectors.toList());
     }
 
