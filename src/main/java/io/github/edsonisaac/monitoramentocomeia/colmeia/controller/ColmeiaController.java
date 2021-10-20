@@ -3,6 +3,7 @@ package io.github.edsonisaac.monitoramentocomeia.colmeia.controller;
 import io.github.edsonisaac.monitoramentocomeia.colmeia.dto.ColmeiaDTO;
 import io.github.edsonisaac.monitoramentocomeia.colmeia.model.Colmeia;
 import io.github.edsonisaac.monitoramentocomeia.colmeia.model.Medicao;
+import io.github.edsonisaac.monitoramentocomeia.infraestrutura.exception.UnauthorizedAcessException;
 import io.github.edsonisaac.monitoramentocomeia.infraestrutura.service.Facade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -81,11 +82,11 @@ public class ColmeiaController {
 
     @GetMapping(value = "/update")
     @ResponseStatus(HttpStatus.OK)
-    public void update (@RequestParam String codigo, @RequestParam Double temperatura, @RequestParam Double umidade, @RequestParam Double peso, @RequestParam String telefone) {
+    public ColmeiaDTO update (@RequestParam String codigo, @RequestParam Double temperatura, @RequestParam Double umidade, @RequestParam Double peso, @RequestParam String telefone) {
 
         Colmeia colmeia = facade.colmeiaFindByCodigo(codigo);
 
-        //if (colmeia.getTelefone().equals(telefone)) {
+        if (colmeia.getTelefone().equals(telefone)) {
             Medicao medicao = new Medicao();
 
             medicao.setTemperatura(temperatura);
@@ -94,9 +95,10 @@ public class ColmeiaController {
             colmeia.getMedicoes().add(medicao);
 
             facade.colmeiaUpdate(colmeia);
-        /*} else {
+            return ColmeiaDTO.toDTO(colmeia);
+        } else {
             throw new UnauthorizedAcessException("Acesso negado!");
-        }*/
+        }
     }
 
     @DeleteMapping(value = "/{id}")
