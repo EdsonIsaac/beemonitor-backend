@@ -9,6 +9,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -32,6 +33,6 @@ public class Colmeia extends AbstractEntity {
 
     @PrePersist
     private void prePersist() {
-        this.dataCadastro = LocalDate.now();
+        this.dataCadastro = LocalDate.now(ZoneId.of("America/Sao_Paulo"));
     }
 }

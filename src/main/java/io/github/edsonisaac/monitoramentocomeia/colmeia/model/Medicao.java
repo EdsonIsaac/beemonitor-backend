@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,12 +20,15 @@ import java.time.LocalDateTime;
 @Entity
 public class Medicao extends AbstractEntity {
 
+    @Column(updatable = false)
     @NotNull(message = "{campo.temperatura.invalido}")
     private Double temperatura;
 
+    @Column(updatable = false)
     @NotNull(message = "{campo.umidade.invalido}")
     private Double umidade;
 
+    @Column(updatable = false)
     @NotNull(message = "{campo.peso.invalido}")
     private Double peso;
 
@@ -33,6 +37,6 @@ public class Medicao extends AbstractEntity {
 
     @PrePersist
     private void prePersist() {
-        this.dataHoraCadastro = LocalDateTime.now();
+        this.dataHoraCadastro = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
     }
 }
