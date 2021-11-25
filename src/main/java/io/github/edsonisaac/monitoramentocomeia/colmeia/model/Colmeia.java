@@ -22,9 +22,6 @@ public class Colmeia extends AbstractEntity {
     @NotEmpty(message = "{campo.codigo.invalido}")
     private String codigo;
 
-    @NotEmpty(message = "{campo.telefone.invalido}")
-    private String telefone;
-
     @Column(updatable = false)
     private LocalDate dataCadastro;
 

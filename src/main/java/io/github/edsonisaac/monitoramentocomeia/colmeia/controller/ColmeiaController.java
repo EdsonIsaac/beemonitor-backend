@@ -3,7 +3,6 @@ package io.github.edsonisaac.monitoramentocomeia.colmeia.controller;
 import io.github.edsonisaac.monitoramentocomeia.colmeia.dto.ColmeiaDTO;
 import io.github.edsonisaac.monitoramentocomeia.colmeia.model.Colmeia;
 import io.github.edsonisaac.monitoramentocomeia.colmeia.model.Medicao;
-import io.github.edsonisaac.monitoramentocomeia.infraestrutura.exception.ObjectNotFoundException;
 import io.github.edsonisaac.monitoramentocomeia.infraestrutura.service.Facade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -74,7 +73,6 @@ public class ColmeiaController {
 
         Colmeia colmeia = facade.colmeiaFindById(id);
         colmeia.setCodigo(colmeiaUpdated.getCodigo());
-        colmeia.setTelefone(colmeiaUpdated.getTelefone());
         facade.colmeiaUpdate(colmeia);
 
         return ColmeiaDTO.toDTO(colmeia);
@@ -86,19 +84,15 @@ public class ColmeiaController {
 
         Colmeia colmeia = facade.colmeiaFindByCodigo(codigo);
 
-        if (colmeia.getTelefone().equals(telefone)) {
-            Medicao medicao = new Medicao();
+        Medicao medicao = new Medicao();
 
-            medicao.setTemperatura(temperatura);
-            medicao.setUmidade(umidade);
-            medicao.setPeso(peso);
-            colmeia.getMedicoes().add(medicao);
+        medicao.setTemperatura(temperatura);
+        medicao.setUmidade(umidade);
+        medicao.setPeso(peso);
+        colmeia.getMedicoes().add(medicao);
 
-            facade.colmeiaUpdate(colmeia);
-            return "Dados salvos com sucesso!";
-        } else {
-            throw new ObjectNotFoundException("Colmeia não encontrada!");
-        }
+        facade.colmeiaUpdate(colmeia);
+        return "Dados salvos com sucesso!";
     }
 
     @DeleteMapping(value = "/{id}")
