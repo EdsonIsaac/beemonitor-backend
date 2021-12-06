@@ -80,7 +80,7 @@ public class ColmeiaController {
 
     @GetMapping(value = "/update")
     @ResponseStatus(HttpStatus.OK)
-    public String update (@RequestParam String codigo, @RequestParam Double temperatura, @RequestParam Double umidade, @RequestParam Double peso, @RequestParam String telefone) {
+    public String update (@RequestParam String codigo, @RequestParam Double temperatura, @RequestParam Double umidade, @RequestParam Double peso) {
 
         Colmeia colmeia = facade.colmeiaFindByCodigo(codigo);
 
