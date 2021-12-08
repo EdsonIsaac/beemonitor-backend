@@ -24,7 +24,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final JWTUtil jwtUtil;
 
-    private static final String[] PUBLIC_MATCHERS = {"/colmeias/update"};
+    private static final String[] PUBLIC_MATCHERS = {"/colmeias/{codigo}/medicoes"};
 
     @Autowired
     public WebConfig(UserDetailsService userDetailsService, JWTUtil jwtUtil) {
