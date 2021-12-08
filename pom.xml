@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>io.github.edsonisaac</groupId>
-	<artifactId>monitoramento-colmeia-backend</artifactId>
+	<artifactId>beemonitor-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>arduino</name>
 	<description>Monitoramento de colmeias com arduino</description>
