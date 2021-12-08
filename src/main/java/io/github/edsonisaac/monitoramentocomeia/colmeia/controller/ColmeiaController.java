@@ -78,17 +78,11 @@ public class ColmeiaController {
         return ColmeiaDTO.toDTO(colmeia);
     }
 
-    @GetMapping(value = "/update")
+    @PostMapping("/{codigo}/medicoes")
     @ResponseStatus(HttpStatus.OK)
-    public String update (@RequestParam String codigo, @RequestParam Double temperatura, @RequestParam Double umidade, @RequestParam Double peso) {
+    public String saveMedicao (@PathVariable String codigo, @RequestBody Medicao medicao) {
 
         Colmeia colmeia = facade.colmeiaFindByCodigo(codigo);
-
-        Medicao medicao = new Medicao();
-
-        medicao.setTemperatura(temperatura);
-        medicao.setUmidade(umidade);
-        medicao.setPeso(peso);
         colmeia.getMedicoes().add(medicao);
 
         facade.colmeiaUpdate(colmeia);

@@ -23,7 +23,7 @@ public class ColmeiaDTO {
             colmeia.getId(),
             colmeia.getCodigo(),
             colmeia.getDataCadastro(),
-            colmeia.getMedicoes().stream().map(x -> MedicaoDTO.toDTO(x)).collect(Collectors.toSet())
+            colmeia.getMedicoes() != null ? colmeia.getMedicoes().stream().map(x -> MedicaoDTO.toDTO(x)).collect(Collectors.toSet()) : null
         );
     }
 }
