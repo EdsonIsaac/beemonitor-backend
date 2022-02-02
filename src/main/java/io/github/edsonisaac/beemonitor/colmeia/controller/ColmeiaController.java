@@ -27,23 +27,30 @@ public class ColmeiaController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ColmeiaDTO> findAll (@RequestParam(required = false) boolean oneMedicao) {
+    public List<ColmeiaDTO> findAll (@RequestParam(defaultValue = "false") Boolean collections, @RequestParam(defaultValue = "0") Long size) {
 
-        if (oneMedicao) {
-            return facade.colmeiaFindAll()
-                .stream()
+        if (collections) {
+            return facade.colmeiaFindAll().stream()
                 .map(colmeia -> {
-
-                    if (colmeia.getMedicoes().size() > 0) {
-                        colmeia.setMedicoes(Stream.of(colmeia.getMedicoes().stream().sorted((a, b) -> a.getDataHoraCadastro().compareTo(b.getDataHoraCadastro()) * -1).findFirst().orElse(null)).collect(Collectors.toSet()));
-                    }
-
+                    colmeia.setMedicoes(colmeia.getMedicoes().stream()
+                        .sorted((a, b) -> a.getDataHoraCadastro().compareTo(b.getDataHoraCadastro()) * -1)
+                        .limit(size)
+                        .collect(Collectors.toSet()));
                     return ColmeiaDTO.toDTO(colmeia);
-                }).collect(Collectors.toList())
+                })
+                .collect(Collectors.toList())
             ;
         }
 
-        return facade.colmeiaFindAll().stream().map(x -> ColmeiaDTO.toDTO(x)).collect(Collectors.toList());
+        else {
+            return facade.colmeiaFindAll().stream()
+                .map(colmeia -> {
+                    colmeia.setMedicoes(null);
+                    return ColmeiaDTO.toDTO(colmeia);
+                })
+                .collect(Collectors.toList())
+            ;
+        }
     }
 
     @GetMapping(value = "/{id}")
