@@ -48,11 +48,11 @@ public class ColmeiaController {
 
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ColmeiaDTO findById (@PathVariable Long id, @RequestParam(defaultValue = "false", required = false) Boolean collections, @RequestParam(defaultValue = "null", required = false) String date) {
+    public ColmeiaDTO findById (@PathVariable Long id, @RequestParam(defaultValue = "false", required = false) Boolean collections, @RequestParam(defaultValue = "", required = false) String date) {
 
         if (collections) {
 
-            if (date == null) {
+            if (date.isEmpty()) {
                 return ColmeiaDTO.toDTO(facade.colmeiaFindById(id));
             }
 
