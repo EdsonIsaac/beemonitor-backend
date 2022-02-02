@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -46,8 +48,27 @@ public class ColmeiaController {
 
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ColmeiaDTO findById (@PathVariable Long id) {
-        return ColmeiaDTO.toDTO(facade.colmeiaFindById(id));
+    public ColmeiaDTO findById (@PathVariable Long id, @RequestParam(name = "collections", required = false) Boolean isCollections, @RequestParam(name = "date", required = false) String date) {
+
+        if (isCollections) {
+
+            if (date == null) {
+                return ColmeiaDTO.toDTO(facade.colmeiaFindById(id));
+            }
+
+            else {
+                Colmeia colmeia = facade.colmeiaFindById(id);
+                LocalDate filter = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                colmeia.setMedicoes(colmeia.getMedicoes().stream().filter(medicao -> medicao.getDataHoraCadastro().toLocalDate().isEqual(filter)).collect(Collectors.toSet()));
+                return ColmeiaDTO.toDTO(colmeia);
+            }
+        }
+
+        else {
+            Colmeia colmeia = facade.colmeiaFindById(id);
+            colmeia.setMedicoes(null);
+            return ColmeiaDTO.toDTO(colmeia);
+        }
     }
 
     @GetMapping(value = "/search")
