@@ -1,7 +1,10 @@
 package io.github.edsonisaac.beemonitor.colmeia.dto;
 
 import io.github.edsonisaac.beemonitor.colmeia.model.Colmeia;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.Set;

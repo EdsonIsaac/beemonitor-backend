@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping(value = "/colmeias")
@@ -55,7 +54,7 @@ public class ColmeiaController {
 
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ColmeiaDTO findById (@PathVariable Long id, @RequestParam(defaultValue = "false", required = false) Boolean collections, @RequestParam(defaultValue = "", required = false) String date) {
+    public ColmeiaDTO findById (@PathVariable Long id, @RequestParam(defaultValue = "false") Boolean collections, @RequestParam(defaultValue = "") String date) {
 
         if (collections) {
 
