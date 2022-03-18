@@ -3,15 +3,15 @@ package io.github.edsonisaac.beemonitor.colmeia.controller;
 import io.github.edsonisaac.beemonitor.colmeia.dto.ColmeiaDTO;
 import io.github.edsonisaac.beemonitor.colmeia.model.Colmeia;
 import io.github.edsonisaac.beemonitor.colmeia.model.Medicao;
-import io.github.edsonisaac.beemonitor.infraestrutura.exception.ObjectNotFoundException;
 import io.github.edsonisaac.beemonitor.infraestrutura.service.Facade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping(value = "/colmeias")
@@ -26,29 +26,55 @@ public class ColmeiaController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ColmeiaDTO> findAll (@RequestParam(required = false) boolean oneMedicao) {
+    public List<ColmeiaDTO> findAll (@RequestParam(defaultValue = "false") Boolean collections, @RequestParam(defaultValue = "0") Long size) {
 
-        if (oneMedicao) {
-            return facade.colmeiaFindAll()
-                .stream()
+        if (collections) {
+            return facade.colmeiaFindAll().stream()
                 .map(colmeia -> {
-
-                    if (colmeia.getMedicoes().size() > 0) {
-                        colmeia.setMedicoes(Stream.of(colmeia.getMedicoes().stream().sorted((a, b) -> a.getDataHoraCadastro().compareTo(b.getDataHoraCadastro()) * -1).findFirst().orElse(null)).collect(Collectors.toSet()));
-                    }
-
+                    colmeia.setMedicoes(colmeia.getMedicoes().stream()
+                        .sorted((a, b) -> a.getDataHoraCadastro().compareTo(b.getDataHoraCadastro()) * -1)
+                        .limit(size)
+                        .collect(Collectors.toSet()));
                     return ColmeiaDTO.toDTO(colmeia);
-                }).collect(Collectors.toList())
+                })
+                .collect(Collectors.toList())
             ;
         }
 
-        return facade.colmeiaFindAll().stream().map(x -> ColmeiaDTO.toDTO(x)).collect(Collectors.toList());
+        else {
+            return facade.colmeiaFindAll().stream()
+                .map(colmeia -> {
+                    colmeia.setMedicoes(null);
+                    return ColmeiaDTO.toDTO(colmeia);
+                })
+                .collect(Collectors.toList())
+            ;
+        }
     }
 
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ColmeiaDTO findById (@PathVariable Long id) {
-        return ColmeiaDTO.toDTO(facade.colmeiaFindById(id));
+    public ColmeiaDTO findById (@PathVariable Long id, @RequestParam(defaultValue = "false") Boolean collections, @RequestParam(defaultValue = "") String date) {
+
+        if (collections) {
+
+            if (date.isEmpty()) {
+                return ColmeiaDTO.toDTO(facade.colmeiaFindById(id));
+            }
+
+            else {
+                Colmeia colmeia = facade.colmeiaFindById(id);
+                LocalDate filter = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                colmeia.setMedicoes(colmeia.getMedicoes().stream().filter(medicao -> medicao.getDataHoraCadastro().toLocalDate().isEqual(filter)).collect(Collectors.toSet()));
+                return ColmeiaDTO.toDTO(colmeia);
+            }
+        }
+
+        else {
+            Colmeia colmeia = facade.colmeiaFindById(id);
+            colmeia.setMedicoes(null);
+            return ColmeiaDTO.toDTO(colmeia);
+        }
     }
 
     @GetMapping(value = "/search")
@@ -74,31 +100,20 @@ public class ColmeiaController {
 
         Colmeia colmeia = facade.colmeiaFindById(id);
         colmeia.setCodigo(colmeiaUpdated.getCodigo());
-        colmeia.setTelefone(colmeiaUpdated.getTelefone());
         facade.colmeiaUpdate(colmeia);
 
         return ColmeiaDTO.toDTO(colmeia);
     }
 
-    @GetMapping(value = "/update")
+    @PostMapping("/{codigo}/medicoes")
     @ResponseStatus(HttpStatus.OK)
-    public String update (@RequestParam String codigo, @RequestParam Double temperatura, @RequestParam Double umidade, @RequestParam Double peso, @RequestParam String telefone) {
+    public String saveMedicao (@PathVariable String codigo, @RequestBody Medicao medicao) {
 
         Colmeia colmeia = facade.colmeiaFindByCodigo(codigo);
+        colmeia.getMedicoes().add(medicao);
 
-        if (colmeia.getTelefone().equals(telefone)) {
-            Medicao medicao = new Medicao();
-
-            medicao.setTemperatura(temperatura);
-            medicao.setUmidade(umidade);
-            medicao.setPeso(peso);
-            colmeia.getMedicoes().add(medicao);
-
-            facade.colmeiaUpdate(colmeia);
-            return "Dados salvos com sucesso!";
-        } else {
-            throw new ObjectNotFoundException("Colmeia não encontrada!");
-        }
+        facade.colmeiaUpdate(colmeia);
+        return "Dados salvos com sucesso!";
     }
 
     @DeleteMapping(value = "/{id}")

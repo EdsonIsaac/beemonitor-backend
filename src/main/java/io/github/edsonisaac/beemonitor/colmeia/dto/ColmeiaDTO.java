@@ -1,7 +1,10 @@
 package io.github.edsonisaac.beemonitor.colmeia.dto;
 
 import io.github.edsonisaac.beemonitor.colmeia.model.Colmeia;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -14,7 +17,6 @@ import java.util.stream.Collectors;
 public class ColmeiaDTO {
     private Long id;
     private String codigo;
-    private String telefone;
     private LocalDate dataCadastro;
     private Set<MedicaoDTO> medicoes;
 
@@ -23,9 +25,8 @@ public class ColmeiaDTO {
         return new ColmeiaDTO(
             colmeia.getId(),
             colmeia.getCodigo(),
-            colmeia.getTelefone(),
             colmeia.getDataCadastro(),
-            colmeia.getMedicoes().stream().map(x -> MedicaoDTO.toDTO(x)).collect(Collectors.toSet())
+            colmeia.getMedicoes() != null ? colmeia.getMedicoes().stream().map(x -> MedicaoDTO.toDTO(x)).collect(Collectors.toSet()) : null
         );
     }
 }
