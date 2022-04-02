@@ -11,10 +11,10 @@
 	<groupId>io.github.edsonisaac</groupId>
 	<artifactId>beemonitor-backend</artifactId>
 	<version>1.0.0</version>
-	<name>arduino</name>
+	<name>beemonitor</name>
 	<description>Monitoramento de colmeias com arduino</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
